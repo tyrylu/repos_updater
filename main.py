@@ -17,7 +17,6 @@ def signature_time_str(signature):
     time = datetime.fromtimestamp(signature.time, timezone(timedelta(hours=signature.offset/60)))
     return time.strftime("%c %z")
 
-
 def commit_is_interesting(commit):
     no_interesting_prefixes = ["Merge ", "Bump ", "[tx-robot]", "Merge!", "Land #", "Auto merge", "Update dependency", "Update Rust crate", "Rollup merge", "build(deps)", "automatic module_metadata_base.json update", "Autosync the updated"]
     for prefix in no_interesting_prefixes:
@@ -45,8 +44,8 @@ def generate_changelog(repo, old_head):
         print("Generating changelog...")
         tpl = env.get_template("commits_report.tpl")
         rendered = tpl.render(commits=reversed(commits), num_commits=len(commits))
-        os.makedirs("logs", exist_ok=True)
-        dest = os.path.join("logs", f"{repo_name} ({interesting_commits} of {len(commits)}).htm")
+        os.makedirs("changelogs", exist_ok=True)
+        dest = os.path.join("changelogs", f"{repo_name} ({interesting_commits} of {len(commits)}).htm")
         with open(dest, "w", encoding="utf-8") as fh:
             fh.write(rendered)
 
@@ -63,7 +62,7 @@ def update_repo(path):
     return res
 
 locale.setlocale(locale.LC_ALL, "")
-env = Environment(loader=FileSystemLoader(searchpath="."), trim_blocks=True, lstrip_blocks=True)
+env = Environment(loader=FileSystemLoader(searchpath=os.path.dirname(__file__)), trim_blocks=True, lstrip_blocks=True)
 env.globals["commit_time_str"] = commit_time_str
 env.globals["signature_time_str"] = signature_time_str
 root = input("Enter the repositories container path: ")
