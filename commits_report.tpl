@@ -22,12 +22,17 @@ Committer: {{ commit.committer.name }} &lt;{{ commit.committer.email }}&gt;<br>
 Committer time: {{ signature_time_str(commit.committer) }}<br>
 </p>
 {% for parent in commit.parents %}
+{% set diff_text = parent.tree.diff_to_tree(commit.tree).patch|e|replace("\n", "<br>") %}
+{% if diff_text|length > 1024*20 %}
+<h3>Diff with parent {{ loop.index }} not shown, it is {{ diff_text|length }} characters in length</h3>
+{% else %}
 <details>
 <summary><h3>Diff with parent {{ loop.index }}</h3></summary>
 <code>
-{{ parent.tree.diff_to_tree(commit.tree).patch|e|replace("\n", "<br>") }}
+{{ diff_text }}
 </code>
 </details>
+{% endif %}
 {% endfor %}
 {% endfor %}
 </main>
