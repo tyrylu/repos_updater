@@ -22,7 +22,7 @@ def commit_is_interesting(commit):
     for prefix in no_interesting_prefixes:
         if commit.message.startswith(prefix):
             return False
-    if commit.message.startswith("Update") and commit.message.endswit("translation"):
+    if commit.message.startswith("Update") and commit.message.endswith("translation"):
         return False
     return True
 
