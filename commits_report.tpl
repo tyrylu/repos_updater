@@ -16,10 +16,15 @@
 {% endif %}
 <p>{{ commit.message|e|replace("\n", "<br>") }}</p>
 <p>
+{% if commit.author == commit.committer %}
+Author & committer: {{ commit.author.name }} &lt;{{ commit.author.email }}&gt;<br>
+Commit time: {{ signature_time_str(commit.author) }}<br>
+{% else %}
 Author: {{ commit.author.name }} &lt;{{ commit.author.email }}&gt;<br>
 Author time: {{ signature_time_str(commit.author) }}<br>
 Committer: {{ commit.committer.name }} &lt;{{ commit.committer.email }}&gt;<br>
 Committer time: {{ signature_time_str(commit.committer) }}<br>
+{% endif %}
 </p>
 {% for parent in commit.parents %}
 {% set diff_text = parent.tree.diff_to_tree(commit.tree).patch|e|replace("\n", "<br>") %}
