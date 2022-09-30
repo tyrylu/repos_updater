@@ -18,11 +18,12 @@ def signature_time_str(signature):
     return time.strftime("%c %z")
 
 def commit_is_interesting(commit):
+    first_line = commit.message.splitlines()[0]
     no_interesting_prefixes = ["Merge ", "Bump ", "[tx-robot]", "Merge!", "Land #", "Auto merge", "Update dependency", "Update Rust crate", "Rollup merge", "build(deps)", "automatic module_metadata_base.json update", "Autosync the updated", "Localisation update", "Translated using", "chore(deps)"]
     for prefix in no_interesting_prefixes:
-        if commit.message.startswith(prefix):
+        if first_line.startswith(prefix):
             return False
-    if commit.message.startswith("Update") and commit.message.strip().endswith("translation"):
+    if first_line.startswith("Update") and first_line.endswith("translation"):
         return False
     return True
 
