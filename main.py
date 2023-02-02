@@ -19,7 +19,9 @@ def signature_time_str(signature):
 
 def commit_is_interesting(commit):
     first_line = commit.message.splitlines()[0]
-    no_interesting_prefixes = ["Merge ", "Bump ", "[tx-robot]", "Merge!", "Land #", "Auto merge", "Update dependency", "Update Rust crate", "Rollup merge", "build(deps)", "automatic module_metadata_base.json update", "Autosync the updated", "Localisation update", "Translated using", "chore(deps)"]
+    no_interesting_prefixes = ["Merge ", "Bump ", "[tx-robot]", "Merge!", "Land #", "Auto merge", "Update dependency", "Update Rust crate", "Rollup merge", "build(deps)", "automatic module_metadata_base.json update", "Autosync the updated", "Localisation update", "Translated using", "chore(deps)", "[superproject]", "[gndoc]"]
+    if "🔠" in first_line:
+        return False
     for prefix in no_interesting_prefixes:
         if first_line.startswith(prefix):
             return False
@@ -46,7 +48,7 @@ def generate_changelog(repo, old_head):
     if generate:
         print("Generating changelog...")
         tpl = env.get_template("commits_report.tpl")
-        rendered = tpl.render(commits=reversed(commits), num_commits=len(commits))
+        rendered = tpl.render(commits=reversed(commits), num_commits=len(commits), repo_name=repo_name)
         os.makedirs("changelogs", exist_ok=True)
         dest = os.path.join("changelogs", f"{repo_name} ({interesting_commits} of {len(commits)}).htm")
         with open(dest, "w", encoding="utf-8") as fh:
