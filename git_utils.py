@@ -9,6 +9,7 @@ class PullResult(enum.Enum):
     merge_failed = 4
     fast_forward_failed = 5
     fetch_failed = 6
+    missing_upstream_branch = 7
 
 class AcceptCertCallbacks(pygit2.RemoteCallbacks):
     def certificate_check(self, certificate, valid, host):
@@ -19,11 +20,14 @@ def pull(repo):
     print("Fetching changes...")
     # Handles broken support for shallow clones.
     try:
-        repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks())
+        repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=pygit2.GIT_FETCH_PRUNE)
     except Exception as ex:
         print("Fetch failed: %s"%ex)
         return PullResult.fetch_failed
     upstream = branch.upstream
+    if upstream is None:
+        print("No upstream branch found.")
+        return PullResult.missing_upstream_branch
     remote_master_id = upstream.target
     merge_result, _ = repo.merge_analysis(remote_master_id)
     # Up to date, do nothing
