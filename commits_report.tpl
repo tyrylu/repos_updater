@@ -29,10 +29,10 @@ Committer time: {{ signature_time_str(commit.committer) }}<br>
 {% for parent in commit.parents %}
 {% set diff_text = parent.tree.diff_to_tree(commit.tree).patch|e|replace("\n", "<br>") %}
 {% if diff_text|length > 1024*20 %}
-<h3>Diff with parent {{ loop.index }} not shown, it is {{ diff_text|length }} characters in length</h3>
+Diff with parent {{ loop.index }} not shown, it is {{ diff_text|length }} characters in length
 {% else %}
 <details>
-<summary><h3>Diff with parent {{ loop.index }}</h3></summary>
+<summary>Diff with parent {{ loop.index }}</summary>
 <code>
 {{ diff_text }}
 </code>
