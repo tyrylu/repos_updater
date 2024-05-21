@@ -10,9 +10,9 @@
 <main class="container">
 {% for commit, is_interesting in commits %}
 {% if is_interesting %}
-<h1>{{ commit.oid }}</h1>
+<h1>{{ commit.id }}</h1>
 {% else %}
-<h2>{{ commit.oid }}</h2>
+<h2>{{ commit.id }}</h2>
 {% endif %}
 <p>{{ commit.message|e|replace("\n", "<br>") }}</p>
 <p>

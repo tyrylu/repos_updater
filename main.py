@@ -19,7 +19,7 @@ def signature_time_str(signature):
 
 def commit_is_interesting(commit):
     first_line = commit.message.splitlines()[0].lower()
-    no_interesting_prefixes = ["merge ", "bump ", "[tx-robot]", "merge!", "land #", "auto merge", "update dependency", "update rust crate", "rollup merge", "build(deps)", "automatic module_metadata_base.json update", "autosync the updated", "localisation update", "translated using", "chore(deps)", "[superproject]", "[gndoc]", "build(deps-dev)", "updating submodules", "autoformatter changes", "fix(l10n): update", "Update deployed packages for", "[chore]: Bump", "[Snyk]", "fix(deps)", "chore(assets): Recompile assets", "chore: Compile assets"]
+    no_interesting_prefixes = ["merge ", "bump ", "[tx-robot]", "merge!", "land #", "auto merge", "update dependency", "update rust crate", "rollup merge", "build(deps)", "automatic module_metadata_base.json update", "autosync the updated", "localisation update", "translated using", "chore(deps)", "[superproject]", "[gndoc]", "build(deps-dev)", "updating submodules", "autoformatter changes", "fix(l10n): update", "Update deployed packages for", "[chore]: Bump", "[Snyk]", "fix(deps)", "chore(assets): Recompile assets", "chore: Compile assets", "[deps]", "chore(deps-dev)"]
     if "🔠" in first_line or "🛠️" in first_line:
         return False
     for prefix in no_interesting_prefixes:
@@ -33,7 +33,7 @@ def generate_changelog(repo, old_head):
     commits = []
     interesting_commits = 0
     for commit in repo.walk(repo.head.target, GIT_SORT_TIME|GIT_SORT_TOPOLOGICAL):
-        if commit.oid == old_head:
+        if commit.id == old_head:
             break
         is_interesting = commit_is_interesting(commit)
         if is_interesting:
