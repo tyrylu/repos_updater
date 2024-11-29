@@ -1,5 +1,6 @@
 import enum
 import pygit2
+import time
 
 class PullResult(enum.Enum):
     up_to_date = 0
@@ -19,11 +20,18 @@ def pull(repo):
     branch = repo.branches[repo.head.shorthand]
     print("Fetching changes...")
     # Handles broken support for shallow clones.
-    try:
-        repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=pygit2.GIT_FETCH_PRUNE)
-    except Exception as ex:
-        print("Fetch failed: %s"%ex)
-        return PullResult.fetch_failed
+    retry = 0
+    while retry < 4:
+        try:
+            retry += 1
+            repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=pygit2.GIT_FETCH_PRUNE)
+            break
+        except Exception as ex:
+            print("Fetch failed, retrying: %s"%ex)
+            time.sleep(1)
+    if retry == 4:
+        print("Failed to fetch changes.")
+        return PullResult.fetch_failed  
     upstream = branch.upstream
     if upstream is None:
         print("No upstream branch found.")
