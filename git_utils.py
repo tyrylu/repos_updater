@@ -21,17 +21,17 @@ def pull(repo):
     print("Fetching changes...")
     # Handles broken support for shallow clones.
     retry = 0
-    while retry < 4:
+    while retry < 11:
         try:
             retry += 1
             repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=pygit2.GIT_FETCH_PRUNE)
             break
         except Exception as ex:
             print("Fetch failed, retrying: %s"%ex)
-            time.sleep(1)
-    if retry == 4:
+            time.sleep(1 * retry)
+    if retry == 11:
         print("Failed to fetch changes.")
-        return PullResult.fetch_failed  
+        return PullResult.fetch_failed
     upstream = branch.upstream
     if upstream is None:
         print("No upstream branch found.")
