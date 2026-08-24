@@ -3,7 +3,7 @@ import os
 from datetime import datetime, timedelta, timezone
 import locale
 import pygit2
-from pygit2 import GIT_SORT_TIME, GIT_SORT_TOPOLOGICAL, GIT_SORT_REVERSE
+from pygit2.enums import SortMode
 from jinja2 import Environment, FileSystemLoader
 import click
 import git_utils
@@ -35,7 +35,7 @@ def commit_is_interesting(commit):
 def generate_changelog(repo, old_head):
     commits = []
     interesting_commits = 0
-    for commit in repo.walk(repo.head.target, GIT_SORT_TIME|GIT_SORT_TOPOLOGICAL):
+    for commit in repo.walk(repo.head.target, SortMode.TIME|SortMode.TOPOLOGICAL):
         if commit.id == old_head:
             break
         is_interesting = commit_is_interesting(commit)

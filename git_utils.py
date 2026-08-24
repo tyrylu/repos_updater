@@ -1,5 +1,6 @@
 import enum
 import pygit2
+from pygit2.enums import FetchPrune
 import time
 
 class PullResult(enum.Enum):
@@ -24,7 +25,7 @@ def pull(repo):
     while retry < 11:
         try:
             retry += 1
-            repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=pygit2.GIT_FETCH_PRUNE)
+            repo.remotes[branch.upstream.remote_name].fetch(callbacks=AcceptCertCallbacks(), prune=FetchPrune.PRUNE)
             break
         except Exception as ex:
             print("Fetch failed, retrying: %s"%ex)
